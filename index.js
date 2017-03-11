@@ -87,7 +87,7 @@ var tests = {
 
 
 
-console.log('`node . > README.md`')
+console.log('`node . | tee README.md`')
 console.log()
 console.log('---')
 console.log()
@@ -106,7 +106,7 @@ function doTests(modules) {
 
 	console.log(`[\`${tests[name].name}\`](${tests[name].url})`)
 	console.log('------------')
-	console.log(`_"${tests[name].desc}"_ by @${tests[name].author})`)
+	console.log(`_"${tests[name].desc}"_ by @${tests[name].author}`)
 	console.log()
 
 	return Promise.resolve({name, iteration})
@@ -122,9 +122,9 @@ function test(options) {
 	timings[name] = timings[name] || 0
 	let now = present()
 	return Promise.resolve(tests[name].test(xmlFiles['soccer.xml']))
-	.tap(() => console.log(`\`${name}\` (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms'))
+	.tap(() => console.log(`\`${name}\` (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms  '))
 	.tap(() => timings[name] += timing)
-	.then(xml => options.iteration < testCount ? test(options) : console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**') && xml)
+	.then(xml => options.iteration < testCount ? test(options) : console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**  ') && xml)
 	// .then(xml => writeFile(path.join(__dirname, `${name}.json`), JSON.stringify(xml, null, 2)))
 }
 
@@ -136,7 +136,7 @@ function rankings() {
 	console.log('name | rank | ms')
 	console.log('---- | ---- | ---')
 	Object.keys(tests).sort((a, b) => timings[a] > timings[b]).forEach(name => {
-		console.log(name, '|', ++rank, '|', timings[name], 'ms')
+		console.log(name, '|', ++rank, '|', parseInt(timings[name], 10), 'ms')
 	})
 	console.log()
 }
