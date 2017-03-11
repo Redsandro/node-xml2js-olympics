@@ -1,0 +1,4 @@
+* text=auto eol=lf whitespace=space-before-tab,indent-with-non-tab,tabwidth=4
+
+*.js    text
+*.xml   text

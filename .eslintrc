@@ -1,0 +1,56 @@
+{
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": [
+            2,
+            "tab",
+            { "SwitchCase": 1 }
+        ],
+        "quotes": [
+            1,
+            "single",
+            "avoid-escape"
+        ],
+        "no-extra-parens" : [
+            1,
+            "all",
+            { "returnAssign": false }
+        ],
+        "strict": [
+            2,
+            "safe"
+        ],
+        "brace-style": [
+            1,
+            "stroustrup",
+            { "allowSingleLine": true }
+        ],
+        "no-unused-vars": [
+            1,
+            {
+                "args": "none"
+            }
+        ],
+        "no-fallthrough": [
+            1
+        ],
+        "no-console": [
+            0
+        ],
+        "linebreak-style": [
+            2,
+            "unix"
+        ],
+        "semi": [
+            1,
+            "never"
+        ],
+        "no-extra-semi": [
+            1
+        ]
+    }
+}
