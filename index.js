@@ -7,7 +7,7 @@
  */
 'use strict'
 
-const testCount	= 5
+const testCount	= 6
 
 const path		= require('path')
 const util		= require('util')
@@ -24,7 +24,7 @@ const xmlFiles	= fs.readdirSync(xmlDir).reduce((list, item) => {
 }, {})
 
 const xml2js	= require('xml2js')
-const xml2jsPar	= new xml2js.Parser()
+const xml2jsPar	= new xml2js.Parser({explicitArray: false, explicitRoot: false})
 const xml2jsPrm	= Promise.promisify(xml2jsPar.parseString)
 const xml2json	= require('xml2json')
 const x2je		= require('xml2js-expat')
@@ -37,7 +37,7 @@ var tests = {
 		desc	: 'Simple XML to JavaScript object converter using node-expat',
 		author	: 'Poetro',
 		url		: 'https://github.com/Poetro/node-xml2js-expat',
-		test	: (xml) => new Promise((resolve, reject) => {
+		test	: xml => new Promise((resolve, reject) => {
 			let json, parser = new x2je.Parser((result, error) => json = result)
 			if (parser.parseString(xml)) resolve(json)
 			else reject(new Error(util.format('node-xml2js-expat: parse error: "%s"', parser.getError())))
@@ -46,7 +46,7 @@ var tests = {
 
 	rapidx2j	: {
 		name	: 'rapidx2j',
-		desc	: 'RapidXML based XML to JSON converter for Node.JS',
+		desc	: 'RapidXML based XML to JSON converter for Node.JS :warning:',
 		author	: 'damirn',
 		url		: 'https://github.com/damirn/rapidx2j',
 		test 	: xml => rapidx2j.parse(xml.toString())
@@ -62,10 +62,12 @@ var tests = {
 
 	xml2json: {
 		name	: 'node-xml2json',
-		desc	: 'Converts XML to JSON using node-expat',
+		desc	: 'Converts XML to JSON using node-expat :warning:',
 		author	: 'buglabs',
 		url		: 'https://github.com/buglabs/node-xml2json',
-		test	: xml => xml2json.toJson(xml)
+		test	: xml => xml2json.toJson(xml, {
+			object: true
+		})
 	},
 
 	nkit: {
@@ -75,8 +77,9 @@ var tests = {
 		url		: 'https://github.com/eye3/nkit4nodejs',
 		test	: (xml) => {
 			var builder = new nkit.AnyXml2VarBuilder({
+				explicit_array: false,
 				trim: true,
-				attrkey: '$',
+				attrkey: '@',
 				textkey: '_'
 			})
 			builder.feed(xml)
@@ -111,9 +114,9 @@ function doTests(modules) {
 
 	return Promise.resolve({name, iteration})
 	.then(test)
+	.then(xml => writeFile(path.join(__dirname, `RESULT_${name}.json`), JSON.stringify(xml, null, 2)))
 	.tap(() => console.log())
-	.then(() => modules)
-	.then(doTests)
+	.then(() => doTests(modules))
 }
 
 function test(options) {
@@ -124,8 +127,7 @@ function test(options) {
 	return Promise.resolve(tests[name].test(xmlFiles['soccer.xml']))
 	.tap(() => console.log(`\`${name}\` (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms  '))
 	.tap(() => timings[name] += timing)
-	.then(xml => options.iteration < testCount ? test(options) : console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**  ') && xml)
-	// .then(xml => writeFile(path.join(__dirname, `${name}.json`), JSON.stringify(xml, null, 2)))
+	.then(xml => options.iteration < testCount ? test(options) : !console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**  ') && xml)
 }
 
 function rankings() {
