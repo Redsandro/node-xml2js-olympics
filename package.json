@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "command-line-args": "^4.0.2",
     "nkit4nodejs": "^2.4.4",
     "present": "^1.0.0",
     "rapidx2j": "^0.1.0",

@@ -3,17 +3,18 @@
  * (Xml to Js Parser tests)
  * @author Sander Steenhuis <info@redsandro.com> (http://www.Redsandro.com/)
  * @created 2015-08-28
- * @modified 2017-03-12
+ * @modified 2017-03-14
  */
 'use strict'
 
-const testCount	= 6
+const testCount	= 8
 
 const path		= require('path')
 const util		= require('util')
 const fs		= require('fs')
 const Promise	= require('bluebird')
 const present	= require('present')
+const args		= require('command-line-args')([{name: 'markdown', alias: 'm', type: Boolean}])
 const timings	= {}
 const writeFile = Promise.promisify(require('fs').writeFile)
 const xmlDir	= path.join(__dirname, 'xml')
@@ -90,10 +91,12 @@ var tests = {
 
 
 
-console.log('`node . | tee README.md`')
-console.log()
-console.log('---')
-console.log()
+if (args.markdown) {
+	console.log('`node . --markdown | tee README.md`')
+	console.log()
+	console.log('---')
+	console.log()
+}
 console.log('Node.js XML to JS Olympics')
 console.log('==========================')
 console.log()
@@ -107,9 +110,14 @@ function doTests(modules) {
 	let name = modules.shift()
 	let iteration = 0
 
-	console.log(`[\`${tests[name].name}\`](${tests[name].url})`)
-	console.log('------------')
-	console.log(`_"${tests[name].desc}"_ by @${tests[name].author}`)
+	if (args.markdown) {
+		console.log(`[\`${tests[name].name}\`](${tests[name].url})`)
+		console.log('------------')
+		console.log(`_${tests[name].desc}_ by @${tests[name].author}`)
+	}
+	else {
+		console.log(`Testing ${tests[name].name} by @${tests[name].author}`)
+	}
 	console.log()
 
 	return Promise.resolve({name, iteration})
@@ -125,9 +133,18 @@ function test(options) {
 	timings[name] = timings[name] || 0
 	let now = present()
 	return Promise.resolve(tests[name].test(xmlFiles['soccer.xml']))
-	.tap(() => console.log(`\`${name}\` (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms  '))
+	.tap(() => args.markdown ?
+		console.log(`\`${name}\` (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms  ') :
+		console.log(`${name} (${++options.iteration}):`, parseInt(timing = present() - now, 10), 'ms  ')
+	)
 	.tap(() => timings[name] += timing)
-	.then(xml => options.iteration < testCount ? test(options) : !console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**  ') && xml)
+	.then(xml =>
+		options.iteration < testCount ?
+			test(options) :
+			args.markdown ?
+				!console.log('**Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms**  ') :
+				!console.log('Average:', parseInt(timings[name] = timings[name] / testCount, 10), 'ms  ')
+		&& xml)
 }
 
 function rankings() {
@@ -135,10 +152,10 @@ function rankings() {
 	console.log('Rankings')
 	console.log('========')
 	console.log()
-	console.log('name | rank | ms')
-	console.log('---- | ---- | ---')
+	console.log('name      | rank | ms')
+	console.log('--------- | ---- | ---')
 	Object.keys(tests).sort((a, b) => timings[a] > timings[b]).forEach(name => {
-		console.log(name, '|', ++rank, '|', parseInt(timings[name], 10), 'ms')
+		console.log(name + new Array(10 - name.length).join(' '), '|', ++rank, '   |', parseInt(timings[name], 10), 'ms')
 	})
 	console.log()
 }
