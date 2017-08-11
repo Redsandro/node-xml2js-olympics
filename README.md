@@ -21,7 +21,7 @@ _Simple XML to JavaScript object converter using node-expat_ by @Poetro
 
 [`rapidx2j` v^0.2.0](https://github.com/damirn/rapidx2j)
 ------------
-_RapidXML based XML to JSON converter for Node.JS :warning:_ by @damirn
+_RapidXML based XML to JSON converter for Node.JS_ by @damirn
 
 `rapidx2j` (1): 146 ms  
 `rapidx2j` (2): 140 ms  

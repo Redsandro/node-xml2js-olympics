@@ -48,7 +48,7 @@ var tests = {
 
 	rapidx2j	: {
 		name	: 'rapidx2j',
-		desc	: 'RapidXML based XML to JSON converter for Node.JS :warning:',
+		desc	: 'RapidXML based XML to JSON converter for Node.JS',
 		author	: 'damirn',
 		url		: 'https://github.com/damirn/rapidx2j',
 		test 	: xml => rapidx2j.parse(xml.toString(), {
