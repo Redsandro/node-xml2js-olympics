@@ -106,7 +106,7 @@ var tests = {
 		desc	: 'A very small xml parser in pure javascript',
 		author	: 'TobiasNickel',
 		url		: 'https://github.com/TobiasNickel/tXml',
-		test	: xml => txml(xml.toString())
+		test	: xml => txml(xml.toString(), {simplify: true})
 	}
 }
 
