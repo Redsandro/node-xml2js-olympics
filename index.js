@@ -31,6 +31,7 @@ const xml2json	= require('xml2json')
 const x2je		= require('xml2js-expat')
 const rapidx2j	= require('rapidx2j')
 const nkit		= require('nkit4nodejs')
+const txml		= require('txml')
 
 var tests = {
 	x2je: {
@@ -98,6 +99,14 @@ var tests = {
 			builder.feed(xml)
 			return builder.end()
 		}
+	},
+
+	txml: {
+		name	: 'txml',
+		desc	: 'A very small xml parser in pure javascript',
+		author	: 'TobiasNickel',
+		url		: 'https://github.com/TobiasNickel/tXml',
+		test	: xml => txml(xml.toString())
 	}
 }
 
